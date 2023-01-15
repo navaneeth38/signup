@@ -1,25 +1,17 @@
 import {StyleSheet, Text, View, TextInput, Button} from 'react-native';
 import {useState, useEffect} from 'react';
 
-const signUpTemplate = {
-  name: '',
-  email: '',
-  password: '',
-  confirmPassword: '',
-};
-
-const signUpTemplateError = {
-  name: '',
-  email: '',
-  password: '',
-  confirmPassword: '',
+const signUpTemplate= {
+  name: {value: '',error: '' },
+  email: {value: '',error: ''},
+  dob: {value: '',error:''},
+  country: {value: '',error: ''},
+  phone: {value: '',error: ''},
 };
 
 function App() {
   const [signupForm, setsignupForm] = useState({...signUpTemplate});
-  const [signupFormError, setsignupFormError] = useState({
-    ...signUpTemplateError,
-  });
+
 
   const handleFormError = (key, value) => {
     let error = ''
@@ -39,15 +31,23 @@ function App() {
         error = "Invalid email"
       }
     }
-    else if(key === 'password'){
-      if(value.length < 6){
-        error = "Password must contain atleast 6 characters"
+    else if(key === 'dob'){
+      if(value === ''){
+        error = 'Should not be blank'
       }
-      else   if(value.length>6 && value.match(/[a-z]/) && value.match(/[A-Z]/) && value.match(/\d+/) && value.match(/.[!,@,#,$,%,^,&,*,?,_,~,-,(,)]/)){
-             error = ""
+      
+    }
+    else if(key === 'country'){
+      if(value.length < 3){
+        error = "Country must contain atleast 3 characters"
+      } 
+    }
+    else if(key === 'phone'){
+      if(value.length <10){
+        error = "Must be atleast 10 digits"
       }
-      else {
-        error = "Invalid password"
+      else if(value.length > 12){
+        error = "Must not be greater than 12 digits"
       }
     }
     
@@ -56,7 +56,6 @@ function App() {
 
   const handleForm = (key, value) => {
     let currentSignupForm = {...signupForm};
-    let currentSignupFormError = {...signupFormError};
     // if(key === 'name'){
     //   currentSignupForm.name = value
     // }
@@ -69,51 +68,64 @@ function App() {
     // else if(key === 'confirmPassword'){
     //   currentSignupForm.confirmPassword = value
     // }
-    currentSignupForm[key] = value;
-    currentSignupFormError[key] = handleFormError(key, value);
+    currentSignupForm[key]['value'] = value;
+    currentSignupForm[key]['error'] = handleFormError(key, value);
     setsignupForm(currentSignupForm)
-    setsignupFormError(currentSignupFormError)
   };
 
   useEffect(() => {
-    console.log('Signup form', signupForm, signupFormError);
-  }, [signupForm,signupFormError]);
+    console.log('Signup form', signupForm);
+  }, [signupForm]);
 
   return (
     <View style={styles.container}>
       <View style={styles.formContainer}>
-        <Text style={styles.heading}>Sign Up</Text>
+        <View style={styles.nameContain}>
+          
+        <Text style={styles.name}>{signupForm.name.value}</Text>
+        </View>
+        <Text style={styles.heading}>PERSONAL INFORMATION</Text>
         <TextInput
           style={styles.input}
           placeholder="Fullname"
-          value={signupForm.name}
+          value={signupForm.name.value}
           onChangeText={text => handleForm('name', text)}
         />
-        <Text style={styles.error}>{signupFormError.name}</Text>
+       {signupForm.name.error &&  <Text style={styles.error}>{signupForm.name.error}</Text>}
         <TextInput
           style={styles.input}
           placeholder="Email Address"
-          value={signupForm.email}
           onChangeText={text => handleForm('email', text)}
+          value={signupForm.email.value}
+          keyboardType="email-address"
         />
-        <Text style={styles.error}>{signupFormError.email}</Text>
+        {signupForm.email.error &&  <Text style={styles.error}>{signupForm.email.error}</Text>}
+        <TextInput 
+        style={styles.input}
+        placeholder="DOB"
+        value={signupForm.dob.value}
+        onChangeText={text => handleForm('dob', text)}
+        keyboardType="numeric"        />
+        {signupForm.dob.error &&  <Text style={styles.error}>{signupForm.dob.error}</Text>}
         <TextInput
           style={styles.input}
-          placeholder="Password"
-          value={signupForm.password}
-          onChangeText={text => handleForm('password', text)}
+          placeholder="Country"
+          onChangeText={text => handleForm('country', text)}
+          value={signupForm.country.value}
+          keyboardType="default"
         />
-        <Text style={styles.error}>{signupFormError.password}</Text>
+        {signupForm.country.error &&  <Text style={styles.error}>{signupForm.country.error}</Text>}
         <TextInput
           style={styles.input}
-          placeholder="Confirm Password"
-          value={signupForm.confirmPassword}
-          onChangeText={text => handleForm('confirmPassword', text)}
+          placeholder="Phone number *"
+          onChangeText={text => handleForm('phone', text)}
+          value={signupForm.phone.value}
+          keyboardType="number-pad"
         />
-        <Text style={styles.error}>{signupFormError.confirmPassword}</Text>
+       {signupForm.phone.error &&  <Text style={styles.error}>{signupForm.phone.error}</Text>}
 
         <View style={styles.btnContainer}>
-          <Button title="Next" />
+          <Button  color="rgb(143,20,2)" title="Next" />
         </View>
       </View>
     </View>
@@ -126,14 +138,35 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
     marginVertical: 5,
   },
+  nameContain:{
+    backgroundColor: "white",
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    marginBottom: 30,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    height: 32,
+  },
+  name:{
+    textAlign: 'center',
+    fontSize: 16,
+    fontWeight: '500',
+    color: 'red'
+  },
   container: {
     flex: 1,
-    backgroundColor: '#eee',
+    backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
   },
   formContainer: {
     width: '85%',
+    backgroundColor: 'ivory',
     paddingHorizontal: 20,
     paddingVertical: 20,
     borderRadius: 10,
@@ -147,18 +180,17 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   heading: {
-    fontSize: 22,
+    fontSize: 14,
     color: '#333',
-    fontWeight: '600',
-    marginBottom: 30,
-    textAlign: 'center',
+    fontWeight: '400',
+    marginBottom: 18,
+    textAlign: 'left',
   },
   input: {
-    borderWidth: 1,
+    backgroundColor: "white",
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 5,
-    borderColor: '#aaa',
     marginBottom: 15,
     shadowColor: '#000',
     shadowOffset: {
@@ -171,7 +203,7 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   btnContainer: {
-    width: 150,
+    width: 300,
     marginTop: 30,
     alignSelf: 'center',
   },
