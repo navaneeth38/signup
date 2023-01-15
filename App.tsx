@@ -1,5 +1,6 @@
-import {StyleSheet, Text, View, TextInput, Button} from 'react-native';
+import {StyleSheet, Text, View, TextInput, Button, Image} from 'react-native';
 import {useState, useEffect} from 'react';
+import { Avatar } from './Avatar';
 
 const signUpTemplate= {
   name: {value: '',error: '' },
@@ -73,15 +74,24 @@ function App() {
     setsignupForm(currentSignupForm)
   };
 
+  const onAvatarChange = (image: ImageOrVideo) => {
+    console.log(image);
+    // upload image to server here
+  }; 
+
   useEffect(() => {
     console.log('Signup form', signupForm);
   }, [signupForm]);
 
   return (
     <View style={styles.container}>
+      <Avatar
+          onChange={onAvatarChange}
+          source={require("./avatarPlace.png")}
+        />
       <View style={styles.formContainer}>
+
         <View style={styles.nameContain}>
-          
         <Text style={styles.name}>{signupForm.name.value}</Text>
         </View>
         <Text style={styles.heading}>PERSONAL INFORMATION</Text>
