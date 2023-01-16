@@ -28,10 +28,12 @@ export const Avatar = (props: AvatarProps) => {
 };
 const styles = StyleSheet.create({
   avatar: {
+    borderWidth: 3,
+    borderColor: 'white',
     paddingTop: 20,
-    height: 100,
-    width: 100,
+    height: 120,
+    width: 120,
     borderRadius: 100,
-    padding: 20,
+    padding: 30,
   },
 });
